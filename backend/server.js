@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 const { connectRedis } = require('./config/redisClient');
 const studentRoutes = require('./routes/studentRoutes');
@@ -10,21 +11,9 @@ dotenv.config();
 
 const app = express();
 
-// CORS - allow frontend origins
-const allowedOrigins = [
-  'http://localhost:3000',
-  process.env.FRONTEND_URL // set this in Vercel env vars as your frontend URL
-].filter(Boolean);
-
+// CORS - needed only for local dev (same origin in production)
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, Postman)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
+  origin: ['http://localhost:3000', 'http://localhost:5000']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,12 +29,15 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Routes
+// API Routes - must be defined BEFORE static/catch-all
 app.use('/api/students', studentRoutes);
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({ message: 'Student Database Management System API' });
+// Serve React frontend build (static files)
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Catch-all: send index.html for any non-API route (React SPA routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // Local development only - Vercel handles listening in production
