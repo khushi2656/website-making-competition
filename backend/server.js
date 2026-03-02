@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 // Local development only - Vercel handles listening in production
-if (process.env.VERCEL !== '1') {
+if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
