@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const path = require('path');
 const connectDB = require('./config/db');
 const { connectRedis } = require('./config/redisClient');
 const studentRoutes = require('./routes/studentRoutes');
@@ -37,15 +36,12 @@ app.use(async (req, res, next) => {
   }
 });
 
-// API Routes - must be defined BEFORE static/catch-all
+// API Routes
 app.use('/api/students', studentRoutes);
 
-// Serve React frontend build (static files)
-app.use(express.static(path.join(__dirname, 'build')));
-
-// Catch-all: send index.html for any non-API route (React SPA routing)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'Student Database Management System API' });
 });
 
 // Local development only - Vercel handles listening in production
