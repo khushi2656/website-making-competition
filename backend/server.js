@@ -12,12 +12,22 @@ dotenv.config();
 const app = express();
 
 // CORS - allow all origins (open for competition/demo deployment)
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
+// Explicitly handle OPTIONS preflight for all routes
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Initialize DB + Redis before every request (serverless-safe, reuses open connections)
+// Skip for OPTIONS preflight requests so CORS works correctly
 app.use(async (req, res, next) => {
+  if (req.method === 'OPTIONS') return next();
   try {
     await connectDB();
     await connectRedis();

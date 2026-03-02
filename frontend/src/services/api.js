@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-// Use env variable if set, otherwise fall back to deployed Vercel backend
+// Backend API base URL - points to deployed Vercel backend
+// Updated: 2026-03-02 - force frontend redeploy with correct API URL
 const API_URL = process.env.REACT_APP_API_URL || 'https://website-making-competition.vercel.app/api';
 
 const api = axios.create({
