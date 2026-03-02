@@ -3,6 +3,9 @@ const redis = require('redis');
 let redisClient;
 
 const connectRedis = async () => {
+  // Reuse existing connection (critical for serverless cold starts)
+  if (redisClient && redisClient.isOpen) return;
+
   try {
     redisClient = redis.createClient({
       url: process.env.REDIS_URL
@@ -16,7 +19,7 @@ const connectRedis = async () => {
     console.log('Redis Connected');
   } catch (error) {
     console.error(`Redis Connection Error: ${error.message}`);
-    process.exit(1);
+    redisClient = null; // Allow app to work without cache
   }
 };
 
