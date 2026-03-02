@@ -1,5 +1,5 @@
 const Student = require('../models/Student');
-const { getRedisClient } = require('../config/redis');
+const { getRedisClient } = require('../config/redisClient');
 
 const CACHE_KEY = 'students:all';
 const CACHE_EXPIRY = 300; // 300 seconds
