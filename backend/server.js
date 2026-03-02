@@ -11,9 +11,22 @@ dotenv.config();
 
 const app = express();
 
-// CORS - needed only for local dev (same origin in production)
+// CORS - allow frontend origins
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://website-making-competition-frontend.vercel.app',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5000']
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
