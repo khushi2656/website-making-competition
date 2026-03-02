@@ -9,7 +9,7 @@ import {
   updateStudent,
   deleteStudent
 } from './services/api';
-import './App.css';
+// Tailwind CSS handles all styling via utility classes
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -118,14 +118,28 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="app-header">
-        <h1>Student Database Management System</h1>
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-8 px-4 shadow-lg">
+        <h1 className="text-3xl font-bold text-center tracking-tight">
+          Student Database Management System
+        </h1>
       </header>
 
-      <main className="app-main">
-        {error && <div className="error-banner">{error}</div>}
-        {successMessage && <div className="success-banner">{successMessage}</div>}
+      <main className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+        {/* Error Banner */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg font-medium">
+            {error}
+          </div>
+        )}
+
+        {/* Success Banner */}
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg font-medium">
+            {successMessage}
+          </div>
+        )}
 
         <StudentForm
           onSubmit={editingStudent ? handleUpdateStudent : handleCreateStudent}
